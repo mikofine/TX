@@ -17,17 +17,17 @@
 ============Quantumultx===============
 [task_local]
 #东东工厂
-10 * * * * https://jdsharedresourcescdn.azureedge.net/jdresource/jd_jdfactory.js, tag=东东工厂, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_factory.png, enabled=true
+10 * * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdfactory.js, tag=东东工厂, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_factory.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "10 * * * *" script-path=https://jdsharedresourcescdn.azureedge.net/jdresource/jd_jdfactory.js,tag=东东工厂
+cron "10 * * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdfactory.js,tag=东东工厂
 
 ===============Surge=================
-东东工厂 = type=cron,cronexp="10 * * * *",wake-system=1,timeout=3600,script-path=https://jdsharedresourcescdn.azureedge.net/jdresource/jd_jdfactory.js
+东东工厂 = type=cron,cronexp="10 * * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdfactory.js
 
 ============小火箭=========
-东东工厂 = type=cron,script-path=https://jdsharedresourcescdn.azureedge.net/jdresource/jd_jdfactory.js, cronexpr="10 * * * *", timeout=3600, enable=true
+东东工厂 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdfactory.js, cronexpr="10 * * * *", timeout=3600, enable=true
  */
 const $ = new Env('东东工厂');
 
@@ -49,7 +49,7 @@ if ($.isNode()) {
 }
 let wantProduct = ``;//心仪商品名称
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
-const inviteCodes = [`T0205KkcIkFIjw-NWkCF6ZVxCjVWnYaS5kRrbA@P04z54XCjVWnYaS5u2ak7ZCdan1Bdd2GGiWvC6_uERj`, 'T0205KkcIkFIjw-NWkCF6ZVxCjVWnYaS5kRrbA@P04z54XCjVWnYaS5m9cZ2ariXVJwHf0bgkG7Uo'];
+const inviteCodes = [``];
 !(async () => {
   await requireConfig();
   if (!cookiesArr[0]) {
@@ -86,27 +86,23 @@ const inviteCodes = [`T0205KkcIkFIjw-NWkCF6ZVxCjVWnYaS5kRrbA@P04z54XCjVWnYaS5u2a
       $.done();
     })
 async function jdFactory() {
-  try {
-    await jdfactory_getHomeData();
-    await helpFriends();
-    // $.newUser !==1 && $.haveProduct === 2，老用户但未选购商品
-    // $.newUser === 1新用户
-    if ($.newUser === 1) return
-    await jdfactory_collectElectricity();//收集产生的电量
-    await jdfactory_getTaskDetail();
-    await doTask();
-    await algorithm();//投入电力逻辑
-    await showMsg();
-  } catch (e) {
-    $.logErr(e)
-  }
+  await jdfactory_getHomeData();
+  await helpFriends();
+  // $.newUser !==1 && $.haveProduct === 2，老用户但未选购商品
+  // $.newUser === 1新用户
+  if ($.newUser === 1) return
+  await jdfactory_collectElectricity();//收集产生的电量
+  await jdfactory_getTaskDetail();
+  await doTask();
+  await algorithm();//投入电力逻辑
+  await showMsg();
 }
 function showMsg() {
   return new Promise(resolve => {
     if (!jdNotify) {
       $.msg($.name, '', `${message}`);
     } else {
-      $.log(`${message}`);
+      $.log(`京东账号${$.index}${$.nickName}\n${message}`);
     }
     if (new Date().getHours() === 12) {
       $.msg($.name, '', `${message}`);
@@ -449,7 +445,7 @@ function jdfactory_getTaskDetail() {
               $.taskVos = data.data.result.taskVos;//任务列表
               $.taskVos.map(item => {
                 if (item.taskType === 14) {
-                  console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${item.assistTaskDetailVo.taskToken}\n`)
+                  console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}好友互助码】${item.assistTaskDetailVo.taskToken}\n`)
                 }
               })
             }

@@ -1,8 +1,8 @@
 /*
- * @Author: lxk0301 https://gitee.com/lxk0301
+ * @Author: LXK9301 https://github.com/LXK9301
  * @Date: 2020-08-19 16:12:40 
- * @Last Modified by: lxk0301
- * @Last Modified time: 2021-3-10 11:52:54
+ * @Last Modified by: LXK9301
+ * @Last Modified time: 2021-1-7 17:52:54
  */
 const querystring = require("querystring");
 const $ = new Env();
@@ -10,6 +10,14 @@ const $ = new Env();
 //此处填你申请的SCKEY.
 //(环境变量名 PUSH_KEY)
 let SCKEY = '';
+
+
+// =======================================QQ酷推通知设置区域===========================================
+//此处填你申请的SKEY(具体详见文档 https://cp.xuthus.cc/)
+//(环境变量名 QQ_SKEY)
+let QQ_SKEY = '';
+//此处填写私聊或群组推送，默认私聊(send[私聊]、group[群聊]、wx[个微]、ww[企微]、email[邮件])
+let QQ_MODE = 'send';
 
 // =======================================Bark App通知设置区域===========================================
 //此处填你BarkAPP的信息(IP/设备码，例如：https://api.day.app/XXXXXXXX)
@@ -25,8 +33,7 @@ let TG_BOT_TOKEN = '';
 //此处填你接收通知消息的telegram用户的id，例如：129xxx206
 //(环境变量名 TG_USER_ID)
 let TG_USER_ID = '';
-//Telegram api自建的反向代理地址(不懂可忽略),默认tg官方api(环境变量名:TG_API_HOST)
-let TG_API_HOST = 'api.telegram.org'
+
 // =======================================钉钉机器人通知设置区域===========================================
 //此处填你钉钉 bot 的webhook，例如：5a544165465465645d0f31dca676e7bd07415asdasd
 //(环境变量名 DD_BOT_TOKEN)
@@ -40,15 +47,14 @@ let DD_BOT_SECRET = '';
 let QYWX_KEY = '';
 
 // =======================================企业微信应用消息通知设置区域===========================================
-/*
-此处填你企业微信应用消息的值(详见文档 https://work.weixin.qq.com/api/doc/90000/90135/90236)
-环境变量名 QYWX_AM依次填入 corpid,corpsecret,touser(注:多个成员ID使用|隔开),agentid,消息类型(选填,不填默认文本消息类型)
-注意用,号隔开(英文输入法的逗号)，例如：wwcff56746d9adwers,B-791548lnzXBE6_BWfxdf3kSTMJr9vFEPKAbh6WERQ,mingcheng,1000001,2COXgjH2UIfERF2zxrtUOKgQ9XklUqMdGSWLBoW_lSDAdafat
-可选推送消息类型(推荐使用图文消息（mpnews）):
-- 文本卡片消息: 0 (数字零)
-- 文本消息: 1 (数字一)
-- 图文消息（mpnews）: 素材库图片id, 可查看此教程(http://note.youdao.com/s/HMiudGkb)或者(https://note.youdao.com/ynoteshare1/index.html?id=1a0c8aff284ad28cbd011b29b3ad0191&type=note)
-*/
+//此处填你企业微信应用消息的值(详见文档 https://work.weixin.qq.com/api/doc/90000/90135/90236)
+//依次填入 corpid,corpsecret,touser,agentid,消息类型
+//注意用,号隔开(英文输入法的逗号)，例如：wwcff56746d9adwers,B-791548lnzXBE6_BWfxdf3kSTMJr9vFEPKAbh6WERQ,mingcheng,1000001,2COXgjH2UIfERF2zxrtUOKgQ9XklUqMdGSWLBoW_lSDAdafat
+//可选推送消息类型:
+// - 卡片消息: 0 (数字零)
+// - 文字消息: 1 (数字一)
+// - 图文消息: 素材库图片id, 可查看此教程(http://note.youdao.com/s/HMiudGkb)
+//(环境变量名 QYWX_AM)
 let QYWX_AM = '';
 
 // =======================================iGot聚合推送通知设置区域===========================================
@@ -56,7 +62,7 @@ let QYWX_AM = '';
 let IGOT_PUSH_KEY = '';
 
 // =======================================push+设置区域=======================================
-//官方文档：https://pushplus.hxtrip.com/
+//官方文档：http://www.pushplus.plus/
 //PUSH_PLUS_TOKEN：微信扫码登录后一对一推送或一对多推送下面的token(您的Token)，不提供PUSH_PLUS_USER则默认为一对一推送
 //PUSH_PLUS_USER： 一对多推送的“群组编码”（一对多推送下面->您的群组(如无则新建)->群组编码，如果您是创建群组人。也需点击“查看二维码”扫描绑定，否则不能接受群组消息推送）
 let PUSH_PLUS_TOKEN = '';
@@ -98,7 +104,6 @@ if (process.env.TG_BOT_TOKEN) {
 if (process.env.TG_USER_ID) {
   TG_USER_ID = process.env.TG_USER_ID;
 }
-if (process.env.TG_API_HOST) TG_API_HOST = process.env.TG_API_HOST;
 
 if (process.env.DD_BOT_TOKEN) {
   DD_BOT_TOKEN = process.env.DD_BOT_TOKEN;
@@ -130,7 +135,7 @@ if (process.env.PUSH_PLUS_USER) {
 
 async function sendNotify(text, desp, params = {}) {
   //提供6种通知
-  desp += `\n\n本脚本开源免费使用 By：https://gitee.com/lxk0301/jd_docker`;
+  desp += `\n【通知】：\n618动物联萌将取消18点前自动释放技能\n请自行计算伤害，手动使用技能\n\n本仓库备份地址：\nhttps://gitee.com/zero205/JD_tencent_scf`;
   await Promise.all([
     serverNotify(text, desp),//微信server酱
     pushPlusNotify(text, desp)//pushplus(推送加)
@@ -305,7 +310,7 @@ function tgBotNotify(text, desp) {
   return  new Promise(resolve => {
     if (TG_BOT_TOKEN && TG_USER_ID) {
       const options = {
-        url: `https://${TG_API_HOST}/bot${TG_BOT_TOKEN}/sendMessage`,
+        url: `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`,
         body: `chat_id=${TG_USER_ID}&text=${text}\n\n${desp}&disable_web_page_preview=true`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -466,7 +471,7 @@ function ChangeUserId(desp) {
     for (let i = 0; i < userIdTmp.length; i++) {
       const count = "账号" + (i + 1);
       const count2 = "签到号 " + (i + 1);
-      if (desp.match(count2)) {
+      if (desp.match(count) || desp.match(count2)) {
         userId = userIdTmp[i];
       }
     }
@@ -504,7 +509,7 @@ function qywxamNotify(text, desp) {
               textcard: {
                 title: `${text}`,
                 description: `${desp}`,
-                url: 'https://github.com/lxk0301/jd_scripts',
+                url: '127.0.0.1',
                 btntxt: '更多'
               }
             }
@@ -535,16 +540,9 @@ function qywxamNotify(text, desp) {
                 ]
               }
             }
-        };
-        if (!QYWX_AM_AY[4]) {
-          //如不提供第四个参数,则默认进行文本消息类型推送
-          options = {
-            msgtype: 'text',
-            text: {
-              content: `${text}\n\n${desp}`
-            }
-          }
         }
+        ;
+
         options = {
           url: `https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=${accesstoken}`,
           json: {
@@ -639,7 +637,7 @@ function pushPlusNotify(text, desp) {
         topic: `${PUSH_PLUS_USER}`
       };
       const options = {
-        url: `https://pushplus.hxtrip.com/send`,
+        url: `http://www.pushplus.plus/send`,
         body: JSON.stringify(body),
         headers: {
           'Content-Type': ' application/json'
